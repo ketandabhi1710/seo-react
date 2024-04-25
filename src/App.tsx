@@ -133,12 +133,15 @@ function App() {
       const username: any = localStorage.getItem("username");
       const password: any = localStorage.getItem("password");
       const url: any = localStorage.getItem("url");
-      const response: any = await axios.delete(`${url}/wp-json/wp/v2/posts/${value.id}`, {
-        auth: { username, password },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response: any = await axios.delete(
+        `${url}/wp-json/wp/v2/posts/${value.id}`,
+        {
+          auth: { username, password },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.status === 200) {
         const newpublishedData = publishedPostsArray.filter(
           (item: any) => item.id !== value.id
@@ -204,7 +207,6 @@ function App() {
     setSelectedRows([...selectedRows, row.Id]);
   };
 
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file: any = e.target.files?.[0];
     if (file) {
@@ -254,13 +256,15 @@ function App() {
     });
 
     // Listen for the "postPublished" event from the server
-    socket.on("postPublishedOncoStore", (data: any) => {
-      console.log("publishedPostsArray :: oncostore :: ", publishedPostsArray);
+    socket.on("postPublishedSeo", (data: any) => {
+      console.log("postPublishedSeo :: Seo :: ", publishedPostsArray);
       setpublishedPostsArray((prevPublishedPostsArray: any) => [
         ...prevPublishedPostsArray,
         data,
       ]);
       console.log("Received postPublished event:", data);
+      setAlertMessage("Post Published Successfully.");
+      setOpen(true);
       // Do something in your UI to react to the published post
     });
 
@@ -277,11 +281,9 @@ function App() {
       } else setHeaderCheck(true);
     }
   };
-  const handleCellClick = (val: any) => {
-  };
+  const handleCellClick = (val: any) => {};
 
-  const handleButtonClick = () => {
-  };
+  const handleButtonClick = () => {};
 
   const validateWordPressCredentials = async (username: any, password: any) => {
     try {
@@ -311,7 +313,7 @@ function App() {
     console.log("dataArray :: ", dataArray);
     axios
       .post(
-        "http://localhost:8000/dynamic-post-publish-oncostore",
+        "http://localhost:8000/dynamic-post-publish",
         // "https://dev-api.sattu.ai/dynamic-post-publish-oncostore",
         {
           baseurl,
@@ -329,7 +331,6 @@ function App() {
       .then((response) => {
         // const res: any = JSON.parse(response);
         console.log("response", response);
-
       });
   };
 
@@ -352,7 +353,7 @@ function App() {
     <>
       <Snackbar
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={2000}
         onClose={() => setOpen(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
